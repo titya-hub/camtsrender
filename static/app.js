@@ -6,6 +6,8 @@ const elements = {
   uploadSubtitle: document.querySelector("#upload-subtitle"),
   fileNote: document.querySelector("#file-note"),
   browseButton: document.querySelector("#browse-button"),
+  sampleGallery: document.querySelector("#sample-gallery"),
+  sampleButtons: [...document.querySelectorAll(".sample-card")],
   cameraButton: document.querySelector("#camera-button"),
   mediaStage: document.querySelector("#media-stage"),
   emptyContent: document.querySelector("#empty-content"),
@@ -107,6 +109,7 @@ function setMode(mode) {
   const isVideo = mode === "video";
   elements.fileInput.accept = isImage ? "image/*" : "video/*";
   elements.uploadBox.hidden = mode === "webcam";
+  elements.sampleGallery.hidden = mode !== "image";
   elements.cameraButton.hidden = mode !== "webcam";
   elements.uploadTitle.textContent = isImage ? "Drop an image here" : "Drop a video here";
   elements.uploadSubtitle.textContent = isImage
@@ -212,6 +215,28 @@ async function analyzeImage(file) {
     elements.resultSubtitle.textContent = "Could not analyze this image.";
   } finally {
     if (requestId === imageRequestId && session === mediaSession) setLoading(false);
+  }
+}
+
+async function analyzeSample(button) {
+  if (activeMode !== "image") return;
+
+  const session = mediaSession;
+  for (const sampleButton of elements.sampleButtons) sampleButton.disabled = true;
+  showError("");
+
+  try {
+    const filename = button.dataset.sample;
+    const response = await fetch(`/static/${encodeURIComponent(filename)}`);
+    if (!response.ok) throw new Error("The sample image could not be loaded. Please try again.");
+
+    const image = await response.blob();
+    if (session !== mediaSession || activeMode !== "image") return;
+    await analyzeImage(new File([image], filename, { type: image.type || "image/jpeg" }));
+  } catch (error) {
+    if (session === mediaSession) showError(error.message);
+  } finally {
+    for (const sampleButton of elements.sampleButtons) sampleButton.disabled = false;
   }
 }
 
@@ -398,6 +423,9 @@ function stopCamera() {
 
 elements.tabs.forEach((tab) => tab.addEventListener("click", () => setMode(tab.dataset.mode)));
 elements.browseButton.addEventListener("click", () => elements.fileInput.click());
+elements.sampleButtons.forEach((button) => {
+  button.addEventListener("click", () => analyzeSample(button));
+});
 elements.fileInput.addEventListener("change", () => {
   const file = elements.fileInput.files?.[0];
   if (!file) return;
