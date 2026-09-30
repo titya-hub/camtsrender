@@ -54,6 +54,24 @@
             <span class="file-note" id="file-note">JPG, PNG or WEBP · up to 16 MB</span>
           </div>
 
+          <div class="sample-gallery" id="sample-gallery" aria-label="Try a sample image">
+            <span class="sample-heading">OR TRY A SAMPLE</span>
+            <div class="sample-grid">
+              <button class="sample-card" type="button" data-sample="sample1.jpg" aria-label="Try sample 1: speed limit sign">
+                <img src="{{ url_for('static', filename='sample1.jpg') }}" alt="Cambodian road with slow-down and speed-limit signs" loading="lazy">
+                <span>Speed limit</span>
+              </button>
+              <button class="sample-card" type="button" data-sample="sample2.jpg" aria-label="Try sample 2: school crossing sign">
+                <img src="{{ url_for('static', filename='sample2.jpg') }}" alt="Cambodian road with a school crossing sign" loading="lazy">
+                <span>School crossing</span>
+              </button>
+              <button class="sample-card" type="button" data-sample="sample3.jpg" aria-label="Try sample 3: Cambodian road signs">
+                <img src="{{ url_for('static', filename='sample3.jpg') }}" alt="Cambodian road with roadside signs and traffic" loading="lazy">
+                <span>Road signs</span>
+              </button>
+            </div>
+          </div>
+
           <button class="camera-button" type="button" id="camera-button" hidden>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h2l1.3-2h6.4l1.3 2h2A1.5 1.5 0 0 1 20 7.5v10a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-10Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12.5" r="3.2" stroke="currentColor" stroke-width="1.6"/></svg>
             <span>Start webcam</span>
